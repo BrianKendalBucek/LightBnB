@@ -2,7 +2,7 @@ $(() => {
   window.propertyListing = {};
   
   function createListing(property, isReservation) {
-    return `
+    return ` 
     <article class="property-listing">
         <section class="property-listing__preview-image">
           <img src="${property.thumbnail_photo_url}" alt="house">

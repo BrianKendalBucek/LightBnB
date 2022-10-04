@@ -40,9 +40,7 @@ function getAllListings(params) {
 
 function getAllReservations() {
   let url = "/api/reservations";
-  return $.ajax({
-    url,
-  });
+  return $.ajax({ url: "/api/reservations" });
 }
 
 const submitProperty = function(data) {
