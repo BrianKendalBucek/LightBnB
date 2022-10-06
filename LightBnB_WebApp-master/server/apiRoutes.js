@@ -9,7 +9,6 @@ module.exports = function(router, database) {
     }); 
   });
   router.get('/reservations', (req, res) => {
-    console.log("------------*******");
     const userId = req.session.userId;
     if (!userId) {
       res.error("💩");
@@ -18,7 +17,6 @@ module.exports = function(router, database) {
     database.getAllReservations(userId)
     
     .then(reservations => {
-      // console.log("*******************", reservations); 
       res.send({reservations})
     })
     .catch(e => {

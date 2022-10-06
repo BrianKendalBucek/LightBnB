@@ -133,35 +133,39 @@ const getAllProperties = function (options, limit = 10) {
     JOIN property_reviews ON properties.id = property_id
     `;
 
-  queryString += ` WHERE `;
-  console.log(queryParams.length);
+  if (Object.keys(options).length !== 0) {
 
-  if (options.city) {
-    queryParams.push(`%${options.city}%`);
-    queryString += `city LIKE $${queryParams.length} `;
+    queryString += ` WHERE `;
+
+    if (options.city) {
+      queryParams.push(`%${options.city}%`);
+      queryString += `city LIKE $${queryParams.length} `;
+    }
+
+    if (options.owner_id) {
+      queryParams.push(`%${options.owner_id}%`);
+      queryString += `owner_id = $${queryParams.length} `;
+    }
+
+    if (options.minimum_price_per_night) {
+      if (queryParams.length > 0) {
+        queryString += 'AND ';
+      };
+      queryParams.push(options.minimum_price_per_night * 100);
+      queryString += `cost_per_night > $${queryParams.length} `;
+    }
+
+    if (options.maximum_price_per_night) {
+      if (queryParams.length > 0) {
+        queryString += 'AND ';
+      };
+      queryParams.push(options.maximum_price_per_night * 100);
+      queryString += `cost_per_night < $${queryParams.length} `;
+
+    }
   }
 
-  if (options.owner_id) {
-    queryParams.push(`%${options.owner_id}%`);
-    queryString += `owner_id = $${queryParams.length} `;
-  }
 
-  if (options.minimum_price_per_night) {
-    if (queryParams.length > 0) {
-      queryString += 'AND ';
-    };
-    queryParams.push(options.minimum_price_per_night * 100);
-    queryString += `cost_per_night > $${queryParams.length} `;
-  }
-
-  if (options.maximum_price_per_night) {
-    if (queryParams.length > 0) {
-      queryString += 'AND ';
-    };
-    queryParams.push(options.maximum_price_per_night * 100);
-    queryString += `cost_per_night < $${queryParams.length} `;
-
-  }
 
   queryString += `
   GROUP BY properties.id
@@ -177,7 +181,7 @@ const getAllProperties = function (options, limit = 10) {
   ORDER BY cost_per_night
   LIMIT $${queryParams.length};
   `;
-  console.log(queryString);
+  console.log("_____________________", queryString);
 
   return pool.query(queryString, queryParams)
     .then((res) => res.rows);
